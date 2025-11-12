@@ -16,10 +16,13 @@
    - OLD: walletId was deleted during processing
    - NEW: walletId is kept in the output and appears as the second column
 
+4. **walletName Column Removed**
+   - walletName column is now deleted during processing for cleaner output
+
 ### Updated Column Order:
 
 1. dateTime (mm/dd/yy format)
-2. walletId ⭐ NEW
+2. walletId ⭐ KEPT
 3. Wallet (empty - for manual entry)
 4. Transaction ID
 5. operation
@@ -35,6 +38,7 @@
 ✅ Date format: 10/02/25 (mm/dd/yy)
 ✅ Oldest transactions appear first
 ✅ walletId column present with values
+✅ walletName column removed
 ✅ All other processing steps working correctly
 
 ---

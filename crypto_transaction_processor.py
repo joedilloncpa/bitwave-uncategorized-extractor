@@ -10,13 +10,13 @@ def process_crypto_transactions(df):
     # Filter for only "Uncategorized" rows
     df = df[df['categorizationStatus'] == 'Uncategorized'].copy()
     
-    # Delete specified columns (removed walletId from the list)
+    # Delete specified columns (removed walletId from the list, but delete walletName)
     columns_to_delete = [
         'categorizationStatus', 'ordID', 'runId', 'dateTimeSEC', 
         'assetbitwaveId', 'exchangeRateSource', 'exchangeRate', 
         'reconciliationStatus', 'contactId', 'categoryId', 
         'description', 'transactionMetadata', 'linetransactionId',
-        'orgId'
+        'orgId', 'walletName'
     ]
     
     # Only delete columns that exist in the dataframe
