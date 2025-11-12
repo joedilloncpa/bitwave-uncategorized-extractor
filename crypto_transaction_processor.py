@@ -10,21 +10,21 @@ def process_crypto_transactions(df):
     # Filter for only "Uncategorized" rows
     df = df[df['categorizationStatus'] == 'Uncategorized'].copy()
     
-    # Delete specified columns
+    # Delete specified columns (removed walletId from the list)
     columns_to_delete = [
         'categorizationStatus', 'ordID', 'runId', 'dateTimeSEC', 
         'assetbitwaveId', 'exchangeRateSource', 'exchangeRate', 
         'reconciliationStatus', 'contactId', 'categoryId', 
         'description', 'transactionMetadata', 'linetransactionId',
-        'orgId', 'walletId'
+        'orgId'
     ]
     
     # Only delete columns that exist in the dataframe
     columns_to_delete = [col for col in columns_to_delete if col in df.columns]
     df = df.drop(columns=columns_to_delete)
     
-    # Convert dateTime to dd/mm/yy format
-    df['dateTime'] = pd.to_datetime(df['dateTime']).dt.strftime('%d/%m/%y')
+    # Convert dateTime to mm/dd/yy format
+    df['dateTime'] = pd.to_datetime(df['dateTime']).dt.strftime('%m/%d/%y')
     
     # Process feeAmount column - remove quotes and convert to number
     if 'feeAmount' in df.columns:
@@ -60,8 +60,10 @@ def process_crypto_transactions(df):
         'parenttransactionId': 'Transaction ID'
     })
     
-    # Sort by Transaction ID
-    df = df.sort_values('Transaction ID')
+    # Sort by Transaction ID (oldest first - ascending by dateTime, then by Transaction ID)
+    df['dateTime_sort'] = pd.to_datetime(df['dateTime'], format='%m/%d/%y')
+    df = df.sort_values(['dateTime_sort', 'Transaction ID'])
+    df = df.drop(columns=['dateTime_sort'])
     
     # Insert blank rows between different Transaction IDs
     result_rows = []
@@ -84,7 +86,7 @@ def process_crypto_transactions(df):
     
     # Reorder columns to specified order
     column_order = [
-        'dateTime', 'Wallet', 'Transaction ID', 'operation', 
+        'dateTime', 'walletId', 'Wallet', 'Transaction ID', 'operation', 
         'assetTicker', 'Token Amount', 'USD Value', 
         'fromAddress', 'toAddress'
     ]
@@ -118,12 +120,13 @@ st.markdown("""
 
 ### Processing Steps:
 - Filters for "Uncategorized" transactions only
-- Removes unnecessary columns
-- Converts dates to dd/mm/yy format
+- Removes unnecessary columns (keeps walletId)
+- Converts dates to mm/dd/yy format
 - Processes FEE operations
 - Converts WITHDRAW/SELL amounts to negative values
 - Adds a "Wallet" column for manual population
 - Groups transactions by Transaction ID with blank row separators
+- Sorts with oldest transactions at the top
 - Reorders columns for optimal readability
 """)
 

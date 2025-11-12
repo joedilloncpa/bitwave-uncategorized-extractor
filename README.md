@@ -16,18 +16,19 @@ A Streamlit web application for processing and formatting cryptocurrency transac
 The application automatically performs the following transformations:
 
 1. **Filtering**: Extracts only rows with "Uncategorized" in the categorizationStatus column
-2. **Column Deletion**: Removes unnecessary columns (categorizationStatus, ordID, runID, dateTimeSEC, etc.)
-3. **Date Formatting**: Converts dateTime to dd/mm/yy format
+2. **Column Deletion**: Removes unnecessary columns (categorizationStatus, ordID, runID, dateTimeSEC, etc.) but keeps walletId
+3. **Date Formatting**: Converts dateTime to mm/dd/yy format
 4. **Fee Processing**: Removes quotes from feeAmount and converts to number
 5. **Fee Operations**: For FEE operations, moves feeAmount → assetAmount and feeAsset → assetTicker
 6. **Negative Values**: Converts WITHDRAW and SELL operations to negative values
 7. **Wallet Column**: Adds empty "Wallet" column for manual population
-8. **Transaction Grouping**: Sorts by parenttransactionId and inserts blank rows between different transactions
-9. **Column Renaming**: 
+8. **Transaction Sorting**: Sorts transactions with oldest at the top
+9. **Transaction Grouping**: Groups by parenttransactionId and inserts blank rows between different transactions
+10. **Column Renaming**: 
    - assetvalueInBaseCurrency → USD Value
    - assetAmount → Token Amount
    - parenttransactionId → Transaction ID
-10. **Column Reordering**: Organizes columns in optimal reading order
+11. **Column Reordering**: Organizes columns in optimal reading order
 
 ## Installation
 
@@ -98,29 +99,32 @@ Your input CSV should contain these columns:
 ### Output CSV Format
 
 The processed CSV will have these columns in order:
-1. dateTime (dd/mm/yy format)
-2. Wallet (empty - for manual entry)
-3. Transaction ID
-4. operation
-5. assetTicker
-6. Token Amount
-7. USD Value
-8. fromAddress
-9. toAddress
+1. dateTime (mm/dd/yy format)
+2. walletId
+3. Wallet (empty - for manual entry)
+4. Transaction ID
+5. operation
+6. assetTicker
+7. Token Amount
+8. USD Value
+9. fromAddress
+10. toAddress
 
 ## Example
 
 **Before Processing:**
 ```csv
-dateTime,operation,assetAmount,assetvalueInBaseCurrency,categorizationStatus
-2025-10-29T03:00:05.000Z,WITHDRAW,100,200,Uncategorized
+dateTime,operation,assetAmount,assetvalueInBaseCurrency,categorizationStatus,walletId
+2025-10-29T03:00:05.000Z,WITHDRAW,100,200,Uncategorized,abc123
 ```
 
 **After Processing:**
 ```csv
-dateTime,Wallet,Transaction ID,operation,assetTicker,Token Amount,USD Value,fromAddress,toAddress
-29/10/25,,TX123,WITHDRAW,SOL,-100,-200,ABC...,XYZ...
+dateTime,walletId,Wallet,Transaction ID,operation,assetTicker,Token Amount,USD Value,fromAddress,toAddress
+10/29/25,abc123,,TX123,WITHDRAW,SOL,-100,-200,ABC...,XYZ...
 ```
+
+Transactions are sorted with oldest dates at the top.
 
 ## Notes
 
