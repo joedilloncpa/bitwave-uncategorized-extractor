@@ -328,12 +328,12 @@ def process_crypto_transactions(df):
     if 'feeAsset' in df.columns:
         df = df.drop(columns=['feeAsset'])
     
-    # Convert WITHDRAW and SELL operations to negative values
-    withdraw_sell_mask = df['operation'].isin(['WITHDRAW', 'SELL'])
-    if withdraw_sell_mask.any():
+    # Convert WITHDRAW, SELL, and FEE operations to negative values
+    negative_ops_mask = df['operation'].isin(['WITHDRAW', 'SELL', 'FEE'])
+    if negative_ops_mask.any():
         # Only convert positive values to negative (don't reverse already negative values)
-        df.loc[withdraw_sell_mask & (df['assetAmount'] > 0), 'assetAmount'] = -df.loc[withdraw_sell_mask & (df['assetAmount'] > 0), 'assetAmount']
-        df.loc[withdraw_sell_mask & (df['assetvalueInBaseCurrency'] > 0), 'assetvalueInBaseCurrency'] = -df.loc[withdraw_sell_mask & (df['assetvalueInBaseCurrency'] > 0), 'assetvalueInBaseCurrency']
+        df.loc[negative_ops_mask & (df['assetAmount'] > 0), 'assetAmount'] = -df.loc[negative_ops_mask & (df['assetAmount'] > 0), 'assetAmount']
+        df.loc[negative_ops_mask & (df['assetvalueInBaseCurrency'] > 0), 'assetvalueInBaseCurrency'] = -df.loc[negative_ops_mask & (df['assetvalueInBaseCurrency'] > 0), 'assetvalueInBaseCurrency']
     
     # Populate Wallet column using walletId lookup
     if 'walletId' in df.columns:
@@ -347,6 +347,22 @@ def process_crypto_transactions(df):
         'assetAmount': 'Token Amount',
         'parenttransactionId': 'Transaction ID'
     })
+    
+    # Filter for transactions where at least one row has absolute USD Value >= 3000
+    # Calculate absolute USD Value for each row
+    df['abs_usd_value'] = df['USD Value'].abs()
+    
+    # Group by Transaction ID and find max absolute USD Value per transaction
+    transaction_max_values = df.groupby('Transaction ID')['abs_usd_value'].max()
+    
+    # Keep only Transaction IDs where max absolute value >= 3000
+    qualifying_transactions = transaction_max_values[transaction_max_values >= 3000].index
+    
+    # Filter dataframe to only include rows from qualifying transactions
+    df = df[df['Transaction ID'].isin(qualifying_transactions)].copy()
+    
+    # Drop the temporary column
+    df = df.drop(columns=['abs_usd_value'])
     
     # Sort by Transaction ID (oldest first - ascending by dateTime, then by Transaction ID)
     df['dateTime_sort'] = pd.to_datetime(df['dateTime'], format='%m/%d/%y')
@@ -415,7 +431,8 @@ st.markdown("""
 - Removes unnecessary columns (walletName removed, walletId used for lookup then removed)
 - Converts dates to mm/dd/yy format
 - Processes FEE operations
-- Converts WITHDRAW/SELL amounts to negative values
+- Converts WITHDRAW/SELL/FEE amounts to negative values
+- Filters to only include transactions where at least one row has USD Value ≥ $3,000 (absolute value)
 - Populates "Wallet" column using wallet lookup table
 - Groups transactions by Transaction ID with blank row separators
 - Sorts with oldest transactions at the top

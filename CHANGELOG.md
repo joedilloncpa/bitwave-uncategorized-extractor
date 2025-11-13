@@ -1,5 +1,27 @@
 # Change Log
 
+## Version 1.3 - November 12, 2025
+
+### Two Major Updates:
+
+**1. FEE Operations Now Negative:**
+- FEE operations now have negative values in both Token Amount and USD Value columns
+- Previously, FEE operations remained positive
+- This aligns FEE operations with WITHDRAW and SELL operations for consistent accounting
+
+**2. Transaction Filtering by USD Value:**
+- New filtering logic added: Only includes transactions where at least one row has an absolute USD Value ≥ $3,000
+- If ANY row within a transaction group meets the $3,000 threshold, ALL rows for that transaction are included
+- This helps focus on material transactions while keeping transaction groups complete
+- Example: If a transaction has 3 rows with values of $50, $4,500, and $100, all 3 rows are kept because one row exceeds $3,000
+
+### Updated Processing Logic:
+âœ… FEE operations converted to negative (Token Amount and USD Value)  
+âœ… Transactions filtered to include only those with USD Value ≥ $3,000 (absolute value)  
+âœ… Transaction grouping preserved - all rows with same Transaction ID kept together  
+
+---
+
 ## Version 1.2 - November 12, 2025
 
 ### Major Feature Added: Automatic Wallet Lookup

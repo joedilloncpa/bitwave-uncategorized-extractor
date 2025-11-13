@@ -20,12 +20,13 @@ The application automatically performs the following transformations:
 3. **Date Formatting**: Converts dateTime to mm/dd/yy format
 4. **Fee Processing**: Removes quotes from feeAmount and converts to number
 5. **Fee Operations**: For FEE operations, moves feeAmount → assetAmount and feeAsset → assetTicker
-6. **Negative Values**: Converts WITHDRAW and SELL operations to negative values
+6. **Negative Values**: Converts WITHDRAW, SELL, and FEE operations to negative values
 7. **Wallet Lookup**: Populates "Wallet" column by matching walletId against built-in wallet lookup table
 8. **WalletId Removal**: Deletes the walletId column after populating Wallet names
-9. **Transaction Sorting**: Sorts transactions with oldest at the top
-10. **Transaction Grouping**: Groups by parenttransactionId and inserts blank rows between different transactions
-11. **Column Renaming**: 
+9. **USD Value Filtering**: Filters to only include transactions where at least one row has absolute USD Value ≥ $3,000 (keeps all rows sharing that Transaction ID)
+10. **Transaction Sorting**: Sorts transactions with oldest at the top
+11. **Transaction Grouping**: Groups by parenttransactionId and inserts blank rows between different transactions
+12. **Column Renaming**: 
    - assetvalueInBaseCurrency → USD Value
    - assetAmount → Token Amount
    - parenttransactionId → Transaction ID
@@ -132,8 +133,9 @@ The Wallet column is automatically populated by matching the walletId from your 
 
 - The **Wallet column** is automatically populated using a built-in lookup table with 280+ wallet IDs and names
 - The **walletId column** is used for matching but is removed from the final output
+- **Transaction filtering**: Only transactions with at least one row having absolute USD Value ≥ $3,000 are included (all rows for qualifying transactions are kept)
 - Blank rows are inserted between different Transaction IDs for easier reading
-- WITHDRAW and SELL operations are automatically converted to negative values
+- WITHDRAW, SELL, and FEE operations are automatically converted to negative values
 - FEE operations merge fee data into the main transaction columns
 
 ## Troubleshooting
@@ -153,5 +155,5 @@ For issues or questions, please refer to the Streamlit documentation at [docs.st
 
 ## Version
 
-Version: 1.0.0  
+Version: 1.3.0  
 Last Updated: November 2025
