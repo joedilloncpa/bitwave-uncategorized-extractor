@@ -1,5 +1,39 @@
 # Change Log
 
+## Version 1.2 - November 12, 2025
+
+### Major Feature Added: Automatic Wallet Lookup
+
+**New Functionality:**
+- **Wallet Column Auto-Population**: The Wallet column is now automatically filled using a built-in lookup table
+- **280+ Wallet Mappings**: Includes comprehensive wallet ID to name mappings
+- **WalletId Column Removed**: After lookup, walletId is deleted from final output for cleaner results
+
+### How It Works:
+1. App reads walletId from uploaded CSV
+2. Matches walletId against internal lookup table
+3. Populates Wallet column with the corresponding wallet name
+4. Removes walletId column from final output
+
+### Updated Column Order:
+1. dateTime (mm/dd/yy format)
+2. Wallet (auto-populated from lookup) ⭐ UPDATED
+3. Transaction ID
+4. operation
+5. assetTicker
+6. Token Amount
+7. USD Value
+8. fromAddress
+9. toAddress
+
+### Testing Results:
+✅ Wallet lookup working perfectly  
+✅ walletId column removed from output  
+✅ Sample wallets populated: "Payments to ME", "FB - Working Capital - SOL Wallet 1", etc.  
+✅ All other processing steps working correctly  
+
+---
+
 ## Version 1.1 - November 12, 2025
 
 ### Changes Made:
@@ -18,28 +52,6 @@
 
 4. **walletName Column Removed**
    - walletName column is now deleted during processing for cleaner output
-
-### Updated Column Order:
-
-1. dateTime (mm/dd/yy format)
-2. walletId ⭐ KEPT
-3. Wallet (empty - for manual entry)
-4. Transaction ID
-5. operation
-6. assetTicker
-7. Token Amount
-8. USD Value
-9. fromAddress
-10. toAddress
-
-### Testing Results:
-
-✅ Sample file processed successfully
-✅ Date format: 10/02/25 (mm/dd/yy)
-✅ Oldest transactions appear first
-✅ walletId column present with values
-✅ walletName column removed
-✅ All other processing steps working correctly
 
 ---
 

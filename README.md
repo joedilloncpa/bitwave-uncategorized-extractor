@@ -16,19 +16,20 @@ A Streamlit web application for processing and formatting cryptocurrency transac
 The application automatically performs the following transformations:
 
 1. **Filtering**: Extracts only rows with "Uncategorized" in the categorizationStatus column
-2. **Column Deletion**: Removes unnecessary columns (categorizationStatus, ordID, runID, dateTimeSEC, etc.) but keeps walletId
+2. **Column Deletion**: Removes unnecessary columns (categorizationStatus, ordID, runID, dateTimeSEC, walletName, etc.)
 3. **Date Formatting**: Converts dateTime to mm/dd/yy format
 4. **Fee Processing**: Removes quotes from feeAmount and converts to number
 5. **Fee Operations**: For FEE operations, moves feeAmount → assetAmount and feeAsset → assetTicker
 6. **Negative Values**: Converts WITHDRAW and SELL operations to negative values
-7. **Wallet Column**: Adds empty "Wallet" column for manual population
-8. **Transaction Sorting**: Sorts transactions with oldest at the top
-9. **Transaction Grouping**: Groups by parenttransactionId and inserts blank rows between different transactions
-10. **Column Renaming**: 
+7. **Wallet Lookup**: Populates "Wallet" column by matching walletId against built-in wallet lookup table
+8. **WalletId Removal**: Deletes the walletId column after populating Wallet names
+9. **Transaction Sorting**: Sorts transactions with oldest at the top
+10. **Transaction Grouping**: Groups by parenttransactionId and inserts blank rows between different transactions
+11. **Column Renaming**: 
    - assetvalueInBaseCurrency → USD Value
    - assetAmount → Token Amount
    - parenttransactionId → Transaction ID
-11. **Column Reordering**: Organizes columns in optimal reading order
+12. **Column Reordering**: Organizes columns in optimal reading order
 
 ## Installation
 
@@ -100,35 +101,37 @@ Your input CSV should contain these columns:
 
 The processed CSV will have these columns in order:
 1. dateTime (mm/dd/yy format)
-2. walletId
-3. Wallet (empty - for manual entry)
-4. Transaction ID
-5. operation
-6. assetTicker
-7. Token Amount
-8. USD Value
-9. fromAddress
-10. toAddress
+2. Wallet (populated from wallet lookup table)
+3. Transaction ID
+4. operation
+5. assetTicker
+6. Token Amount
+7. USD Value
+8. fromAddress
+9. toAddress
+
+Note: The walletId column is used for the lookup but is removed from the final output.
 
 ## Example
 
 **Before Processing:**
 ```csv
 dateTime,operation,assetAmount,assetvalueInBaseCurrency,categorizationStatus,walletId
-2025-10-29T03:00:05.000Z,WITHDRAW,100,200,Uncategorized,abc123
+2025-10-29T03:00:05.000Z,WITHDRAW,100,200,Uncategorized,nv6cqu6esAEqzXQSzTI6
 ```
 
 **After Processing:**
 ```csv
-dateTime,walletId,Wallet,Transaction ID,operation,assetTicker,Token Amount,USD Value,fromAddress,toAddress
-10/29/25,abc123,,TX123,WITHDRAW,SOL,-100,-200,ABC...,XYZ...
+dateTime,Wallet,Transaction ID,operation,assetTicker,Token Amount,USD Value,fromAddress,toAddress
+10/29/25,FB - Working Capital - SOL Wallet 1 (nbEB),TX123,WITHDRAW,SOL,-100,-200,ABC...,XYZ...
 ```
 
-Transactions are sorted with oldest dates at the top.
+The Wallet column is automatically populated by matching the walletId from your CSV against a built-in lookup table of 280+ wallet names. Transactions are sorted with oldest dates at the top.
 
 ## Notes
 
-- The "Wallet" column is intentionally left blank for you to manually populate later
+- The **Wallet column** is automatically populated using a built-in lookup table with 280+ wallet IDs and names
+- The **walletId column** is used for matching but is removed from the final output
 - Blank rows are inserted between different Transaction IDs for easier reading
 - WITHDRAW and SELL operations are automatically converted to negative values
 - FEE operations merge fee data into the main transaction columns
@@ -143,10 +146,6 @@ Transactions are sorted with oldest dates at the top.
 
 **Issue**: Missing data in output
 - **Solution**: Check that your input file has "Uncategorized" status rows
-
-## Future Instructions
-
-After downloading the processed CSV, you mentioned that directions for populating the "Wallet" column will come in a subsequent instruction. The app is ready to accommodate those instructions when you provide them.
 
 ## Support
 
