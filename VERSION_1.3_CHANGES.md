@@ -45,7 +45,14 @@ Transaction XYZ789 has 2 rows:
 - Row 1: USD Value = $500
 - Row 2: USD Value = -$200
 
-**Result:** Both rows are excluded because neither meets the $3,000 threshold
+**Result:** Both rows are excluded because neither meets the $3,000 threshold (absolute values: $500 and $200)
+
+Transaction DEF456 has 1 row:
+- Row 1: USD Value = -$5,500
+
+**Result:** Row is included because absolute value ($5,500) exceeds $3,000
+
+**Important:** The filter uses **absolute value**, so both large positive values (≥$3,000) AND large negative values (≤-$3,000) will include the transaction.
 
 ### 3. 📊 Benefits
 

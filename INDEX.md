@@ -106,6 +106,18 @@
   - Statistics comparison
   - Summary tables
 
+**[ABSOLUTE_VALUE_GUIDE.md](ABSOLUTE_VALUE_GUIDE.md)** (8.9 KB) ⭐ FILTERING EXPLAINED
+- 🎯 **Purpose:** Crystal-clear explanation of absolute value filtering
+- 👤 **For:** Understanding why negative values count
+- ⏱️ **Read Time:** 10 minutes
+- 📋 **Contents:**
+  - Visual number line showing threshold
+  - Decision table with 11 scenarios
+  - 9 real-world examples
+  - Common misconceptions debunked
+  - Why absolute value is used
+  - Quick quiz to test understanding
+
 **[TESTING_GUIDE.md](TESTING_GUIDE.md)** (4.6 KB) ⭐ FOR TESTING
 - 🎯 **Purpose:** Verify the new features work correctly
 - 👤 **For:** Testing after deployment
@@ -177,6 +189,12 @@
 **"Can you show me examples?"**
 → Read: BEFORE_AFTER_EXAMPLES.md
 
+**"How does the absolute value filtering work?"**
+→ Read: ABSOLUTE_VALUE_GUIDE.md
+
+**"Why are negative values included?"**
+→ Read: ABSOLUTE_VALUE_GUIDE.md
+
 **"What were previous versions?"**
 → Read: CHANGELOG.md
 
@@ -190,8 +208,8 @@
 | File Category | Count | Total Size |
 |--------------|-------|------------|
 | Application Files | 3 | ~27 KB |
-| Documentation | 7 | ~30 KB |
-| **Total** | **10** | **~57 KB** |
+| Documentation | 8 | ~39 KB |
+| **Total** | **11** | **~66 KB** |
 
 ---
 
